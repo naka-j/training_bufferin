@@ -1,0 +1,19 @@
+<div id="timesheet-new">
+  <%= render 'shared/errors', errors: @timesheet.errors %>
+  <div class="form-area">
+    <%= form_for @timesheet do |f| %>
+        <%= f.label :start_time, t('activerecord.attributes.timesheet.start_time') %>
+        <%= f.text_field :start_time_year, maxlength: 4 %>
+        /
+        <%= f.text_field :start_time_month, maxlength: 2 %>
+        /
+        <%= f.text_field :start_time_day, maxlength: 2 %>
+        　
+        <%= f.text_field :start_time_hour, maxlength: 2 %>
+        :
+        <%= f.text_field :start_time_min, maxlength: 2 %>
+        <%= f.submit t('common.btn_submit'), class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+</div>

@@ -1,0 +1,11 @@
+<% if errors.present? %>
+    <div class="errors">
+      <ul>
+        <% errors.messages.each do |e| %>
+          <% e[1].each do |m| %>
+            <li><%= m %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+<% end %>

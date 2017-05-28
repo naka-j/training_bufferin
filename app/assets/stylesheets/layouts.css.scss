@@ -1,0 +1,39 @@
+body {
+  background: #c0c0c0;
+  font-family: sans-serif;
+}
+
+.header {
+  background: #4293a5;
+}
+
+.main {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.footer {
+  padding-top: 10px;
+  font-size: 12px;
+  font-style: italic;
+  background: #ccc;
+}
+
+.field_with_errors {
+  display: inline;
+}
+
+.errors {
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    color: red;
+  }
+}
+
+.notice {
+  color: green;
+}
