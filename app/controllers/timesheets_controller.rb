@@ -6,14 +6,17 @@ class TimesheetsController < ApplicationController
 
   def new
     @timesheet = Timesheet.new
+    @timesheet.set_default_value
   end
 
   def create
-    @timesheet = Timesheet.create_new_timesheet(timesheet_params)
-    if @timesheet.errors.present?
-      return render :new
+    @timesheet = Timesheet.new(timesheet_params)
+    @timesheet.set_time_params
+    if @timesheet.save
+      redirect_to new_timesheet_path, notice: t('notice_message.save_success')
+    else
+      render :new
     end
-    redirect_to new_timesheet_path, notice: t('notice_message.save_success')
   end
 
   private

@@ -22,5 +22,15 @@
 en:
   common:
     btn_submit: 'Send'
-  timesheet:
-    start_time: 'Start time'
+  activerecord:
+    attributes:
+      timesheet:
+        start_time: 'Start time'
+        start_time_min: 'Start time(min)'
+  notice_message:
+    save_success: 'Save completely.'
+  error_message:
+    is_required: 'is required.'
+    is_invalid: 'is not correct.'
+    must_be_by_15min: 'must be inputted by 15 min.'
+    already_registered: 'is already registered.'

@@ -12,3 +12,4 @@ ja:
     is_required: 'は必須です。'
     is_invalid: 'は有効な値で入力してください。'
     must_be_by_15min: 'は15分単位で入力してください。'
+    already_registered: 'は既に登録されています。'
