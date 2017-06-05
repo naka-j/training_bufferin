@@ -1,0 +1,21 @@
+<div class="sidebar">
+  <div class="setting-show">
+    <%= t('setting.inputted_by_minute') %>
+    <div class="minute">
+      <span class="minute-text">
+
+      </span>
+      <%= t('common.lbl_minute') %>
+    </div>
+    <button type="button" class="btn"><%= t('common.btn_edit') %></button>
+  </div>
+  <div class="setting-edit">
+    <div class="minute">
+      <span class="minute-text">
+        <%= text_field_tag :setting_minute_form %>
+      </span>
+      <%= t('common.lbl_minute') %>
+    </div>
+    <button type="button" class="btn"><%= t('common.btn_save') %></button>
+  </div>
+</div>

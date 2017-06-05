@@ -6,7 +6,7 @@ module Utilities
     if time_yyyymmddhhmiss.length != 14
       return nil
     end
-    if !(time_yyyymmddhhmiss =~ /^[0-9]+$/)
+    if !is_number_only?(time_yyyymmddhhmiss)
       return nil
     end
     year = time_yyyymmddhhmiss[0..3]
@@ -23,5 +23,13 @@ module Utilities
     end
 
     time
+  end
+
+  def is_number_only?(number_str)
+    if number_str.present?
+      number_str =~ /^[0-9]+$/
+    else
+      false
+    end
   end
 end

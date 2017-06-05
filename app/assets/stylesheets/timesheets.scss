@@ -1,4 +1,43 @@
 // Place all the styles related to the Timesheets controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.input-block {
+  display: inline-block;
+  vertical-align: middle;
 
+  .up-btn, .down-btn {
+    background-color: #ffff00;
+    border-right: 1px #ffffcc solid;
+    border-bottom: 1px #ffffcc solid;
+    border-radius: 4px;
+    width: 100%;
+    padding: 2px 5px;
+    margin: 2px auto;
+    text-align: center;
+    cursor: pointer;
+    -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .up-btn:active, .down-btn:active {
+    background-color: #adff2f;
+    border-right: none;
+    border-bottom: none;
+    border-top: 1px #666 solid;
+    border-left: 1px #666 solid;
+    -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4) inset;;
+    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4) inset;;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4) inset;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    text-align: right;
+    font-size: 28px;
+  }
+
+  .datetime-sign {
+    font-size: 28px;
+  }
+}

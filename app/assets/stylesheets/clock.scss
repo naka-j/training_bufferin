@@ -1,0 +1,29 @@
+.clock-area{
+  position: relative;
+  min-height: 400px;
+}
+.clock {
+  width: 300px;
+  height: 300px;
+  border: 10px #ccc solid;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -70px;
+  right: -30px;
+
+  .needle {
+    background-color: #ccc;
+    border-radius: 5px;
+    height: 10px;
+    position: absolute;
+    right: calc(50% - 5px);
+    top: calc(50% - 5px);
+    transform-origin: calc(100% - 5px) center;
+  }
+  .needle.hour {
+    width: 35%;
+  }
+  .needle.minute {
+    width: 45%;
+  }
+}

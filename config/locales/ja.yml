@@ -1,11 +1,16 @@
 ja:
   common:
     btn_submit: '送信'
+    btn_save: '保存'
+    btn_edit: '変更'
+    lbl_minute: '分'
   activerecord:
     attributes:
       timesheet:
         start_time: '出勤時間'
         start_time_min: '出勤時間（分）'
+  setting:
+    inputted_by_minute: '入力単位'
   notice_message:
     save_success: '登録しました。'
   error_message:
