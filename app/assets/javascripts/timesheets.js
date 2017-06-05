@@ -19,7 +19,7 @@ jQuery(function() {
             }
             if (e.currentTarget.className == 'up-btn') {
                 this.countUpTime(target, targetTextBox, currentVal);
-            } else if (e.currentTarget == 'up-btn') {
+            } else if (e.currentTarget.className == 'down-btn') {
                 this.countDownTime(target, targetTextBox, currentVal);
             } else {
                 return false;

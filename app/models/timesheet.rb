@@ -10,6 +10,13 @@ class Timesheet < ApplicationRecord
 
   MINUTE_INPUT_BY = 15
 
+  scope :by_start_date, ->(start_time) {
+    where('start_time >= ? and start_time <= ?',
+          Time.new(start_time.year, start_time.month, start_time.day, 0, 0, 0),
+          Time.new(start_time.year, start_time.month, start_time.day, 23, 59, 59)
+    )
+  }
+
   #---------------------------------
   # バリデーション
   #---------------------------------
@@ -28,9 +35,9 @@ class Timesheet < ApplicationRecord
     end
 
     # 既に登録されている時間か？
-    registered = Timesheet.find_by_start_time(convert_string_to_time(start_time_str))
+    registered = Timesheet.by_start_date(start_time)
     if registered.present?
-      errors.add(:start_time, start_time_str_with_slash + I18n.t('error_message.already_registered'))
+      errors.add(:start_time, I18n.t('error_message.already_registered'))
     end
   end
 
