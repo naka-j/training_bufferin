@@ -1,4 +1,4 @@
-<div id="timesheet-new">
+<div id="timesheets-new">
   <%= render 'shared/errors', errors: @timesheet.errors %>
   <div class="form-area">
     <%= form_for @timesheet do |f| %>
@@ -36,9 +36,14 @@
               <%= f.text_field :start_time_min, maxlength: 2, class: 'time-input-minute' %>
               <div class="down-btn" target-type="minute"><span class="glyphicon glyphicon-chevron-down"></span></div>
             </div>
-            <div class="input-block">
-              <%= f.submit t('common.btn_submit'), class: 'btn btn-success' %>
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 text-center">
+            <%= link_to t('common.btn_list'), timesheets_path, class: 'btn btn-default btn-lg' %>
+          </div>
+          <div class="col-xs-6 text-center">
+            <%= f.submit t('common.btn_submit'), class: 'btn btn-success btn-lg' %>
           </div>
         </div>
     <% end %>

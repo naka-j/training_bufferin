@@ -3,10 +3,13 @@ ja:
     btn_submit: '送信'
     btn_save: '保存'
     btn_edit: '変更'
+    btn_list: '一覧'
+    btn_new: '新規登録'
     lbl_minute: '分'
   activerecord:
     attributes:
       timesheet:
+        start_time_day: '日付'
         start_time: '出勤時間'
         start_time_min: '出勤時間（分）'
   setting:

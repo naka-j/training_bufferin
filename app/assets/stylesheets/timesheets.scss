@@ -1,6 +1,33 @@
 // Place all the styles related to the Timesheets controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.current-month {
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 5px;
+}
+
+.timesheet-header {
+  margin-top: 10px;
+  background-color: #20b2aa;
+  line-height: 30px;
+}
+
+.timesheet-detail {
+  background-color: #ffffcc;
+  line-height: 30px;
+  position: relative;
+  left: 110%;
+}
+.timesheet-detail-show {
+  transition: left 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  left: 0;
+}
+
+.timesheet-detail:nth-child(2n) {
+  background-color: #fff;
+}
+
 .input-block {
   display: inline-block;
   vertical-align: middle;

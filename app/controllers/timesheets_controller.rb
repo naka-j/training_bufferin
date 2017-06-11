@@ -1,17 +1,19 @@
 #coding: utf-8
 class TimesheetsController < ApplicationController
   def index
-    redirect_to new_timesheet_path
+    if !params[:yyyymm].present?
+      redirect_to "#{timesheets_path}/#{Date.today.strftime('%Y%m')}"
+    end
+    @timesheets = Timesheet.get_monthly_timesheet(params[:yyyymm])
+    @timesheets_header = Timesheet.get_timesheet_header(params[:yyyymm])
   end
-
+  
   def new
-    @timesheet = Timesheet.new
-    @timesheet.set_default_value
+    @timesheet = Timesheet.new_with_default_value
   end
 
   def create
-    @timesheet = Timesheet.new(timesheet_params)
-    @timesheet.set_time_params
+    @timesheet = Timesheet.new_with_params(timesheet_params)
     if @timesheet.save
       redirect_to new_timesheet_path, notice: t('notice_message.save_success')
     else

@@ -1,0 +1,30 @@
+<div id="timesheets-index">
+  <div class="row">
+    <div class="col-xs-4">
+      <%= link_to '<', "#{timesheets_path}/#{@timesheets_header[:prev_month_str]}", class: 'btn btn-lg btn-default' %>
+      <%= link_to '>', "#{timesheets_path}/#{@timesheets_header[:next_month_str]}", class: 'btn btn-lg btn-default' %>
+    </div>
+    <div class="col-xs-4 text-center current-month">
+      <%= @timesheets_header[:target_month] %>
+    </div>
+    <div class="col-xs-4 text-right">
+      <%= link_to t('common.btn_new'), new_timesheet_path, class: 'btn btn-lg btn-primary' %>
+    </div>
+  </div>
+  <div class="row timesheet-header">
+    <div class="col-xs-1 text-center"><%= t('activerecord.attributes.timesheet.start_time_day') %></div>
+    <div class="col-xs-3 text-center"><%= t('activerecord.attributes.timesheet.start_time') %></div>
+    <div class="col-xs-3"></div>
+    <div class="col-xs-3"></div>
+    <div class="col-xs-2"></div>
+  </div>
+  <% @timesheets.each do |t| %>
+    <div class="row timesheet-detail">
+      <div class="col-xs-1 text-center"><%= t.start_time.day %></div>
+      <div class="col-xs-3 text-center"><%= t.start_time_time_str %></div>
+      <div class="col-xs-3"></div>
+      <div class="col-xs-3"></div>
+      <div class="col-xs-2"></div>
+    </div>
+  <% end %>
+</div>

@@ -40,13 +40,13 @@ body {
   background-color: rgba(168, 168, 168, 0.7);
   padding-top: 20px;
   padding-bottom: 40px;
-  min-height: 400px;
+  min-height: 100vh;
 }
 
 .sidebar {
   position: fixed;
   width: 200px;
-  hight: 100vh;
+  height: 100vh;
   background: #000;
 }
 
@@ -56,6 +56,9 @@ body {
   font-size: 12px;
   font-style: italic;
   background: #ccc;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 .field_with_errors {
