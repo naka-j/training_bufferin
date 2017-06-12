@@ -3,6 +3,7 @@
 jQuery(function() {
     var COUNT_TYPE_PLUS = 'P';
     var COUNT_TYPE_MINUS = 'M';
+    var BY_MINUTE = 15;
 
     var Util = {
         // 数字のみか？
@@ -86,54 +87,50 @@ jQuery(function() {
         },
         calculateTime: function(target, currentVal, countType) {
             var nextVal;
-            // 対象が「分」の場合は計算ロジックは不要
-            if (target == 'minute' && countType == COUNT_TYPE_PLUS) {
-                if (currentVal == 0) {
-                    nextVal = '15';
-                } else if (currentVal == 15) {
-                    nextVal = '30';
-                } else if (currentVal == 30) {
-                    nextVal = '45';
-                } else if (currentVal == '45') {
-                    nextVal = '00';
-                }
-                return nextVal;
-            } else if (target == 'minute' && countType == COUNT_TYPE_MINUS) {
-                if (currentVal == 15) {
-                    nextVal = '00';
-                } else if (currentVal == 30) {
-                    nextVal = '15';
-                } else if (currentVal == 45) {
-                    nextVal = '30';
-                } else if (currentVal == 0) {
-                    nextVal = '45';
-                }
-                return nextVal;
+            // 入力値の次の値を算出
+            if (target == 'minute') {
+                nextVal = this.doSimpleCalculation(currentVal, BY_MINUTE, countType);
+            } else {
+                nextVal = this.doSimpleCalculation(currentVal, 1, countType);
             }
+            nextVal = this.fixCalculatedTime(target, nextVal, countType);
 
-            // 1増減後の値で日付として有効でない場合は、増減後の値を修正
-            nextVal = this.doSimpleCalculation(currentVal, 1, countType);
+            return nextVal;
+        },
+        fixCalculatedTime: function(target, nextVal, countType) {
+            var fixedVal = nextVal;
+            // 計算後の値が日付として有効でない場合は、値を修正
             if (target == 'month') {
                 if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_PLUS) {
-                    nextVal = '1'
+                    fixedVal = '1'
                 } else if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_MINUS) {
-                    nextVal = '12'
+                    fixedVal = '12'
                 }
             } else if (target == 'day') {
                 if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_PLUS) {
-                    nextVal = '1'
+                    fixedVal = '1'
                 } else if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_MINUS) {
                     // 1日からマイナスする場合は、月末の日を算出
-                    nextVal = this.getLastDay();
+                    fixedVal = this.getLastDay();
                 }
             } else if (target == 'hour') {
                 if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_PLUS) {
-                    nextVal = '0'
+                    fixedVal = '0'
                 } else if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_MINUS) {
-                    nextVal = '23'
+                    fixedVal = '23'
+                }
+            } else if (target == 'minute') {
+                if (nextVal == '0') {
+                    fixedVal = '00';
+                }
+
+                if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_PLUS) {
+                    fixedVal = '00'
+                } else if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_MINUS) {
+                    fixedVal = (BY_MINUTE * (60 / BY_MINUTE - 1)).toString();
                 }
             }
-            return nextVal;
+            return fixedVal;
         },
         doSimpleCalculation: function(currentVal, diff, countType) {
             if (countType == COUNT_TYPE_PLUS) {

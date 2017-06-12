@@ -2,7 +2,7 @@
 class TimesheetsController < ApplicationController
   def index
     if !params[:yyyymm].present?
-      redirect_to "#{timesheets_path}/#{Date.today.strftime('%Y%m')}"
+      return redirect_to "#{timesheets_path}/#{Date.today.strftime('%Y%m')}"
     end
     @timesheets = Timesheet.get_monthly_timesheet(params[:yyyymm])
     @timesheets_header = Timesheet.get_timesheet_header(params[:yyyymm])

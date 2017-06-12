@@ -19,10 +19,6 @@
   position: relative;
   left: 110%;
 }
-.timesheet-detail-show {
-  transition: left 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  left: 0;
-}
 
 .timesheet-detail:nth-child(2n) {
   background-color: #fff;
