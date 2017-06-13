@@ -20,7 +20,7 @@ class Timesheet < ApplicationRecord
 
   # 月ごとのデータを取得
   scope :get_monthly_timesheet, ->(yyyymm) {
-    where(yearmonth: yyyymm).order('start_time desc')
+    where(year: yyyymm[0..3], month: yyyymm[4..5]).order('start_time desc')
   }
 
   #---------------------------------
@@ -99,7 +99,8 @@ class Timesheet < ApplicationRecord
 
   # インスタンスの値から時間に関するカラムに値をセット
   def set_time_params
-    self.yearmonth = start_time_year_str + start_time_month_str
+    self.year = start_time_year_str
+    self.month = start_time_month_str
     self.start_time = convert_string_to_time(start_time_str)
     # self.end_time = convert_string_to_time(end_time_str)
   end
