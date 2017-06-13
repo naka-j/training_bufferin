@@ -98,38 +98,50 @@ jQuery(function() {
             return nextVal;
         },
         fixCalculatedTime: function(target, nextVal, countType) {
-            var fixedVal = nextVal;
-            // 計算後の値が日付として有効でない場合は、値を修正
-            if (target == 'month') {
-                if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_PLUS) {
-                    fixedVal = '1'
-                } else if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_MINUS) {
-                    fixedVal = '12'
+            // 計算後の値が日付として有効な場合は、修正せずにreturn（分の桁数のみ修正）
+            if (this.isValidUpdatedDatetime(target, nextVal)) {
+                if (target == 'minute' && nextVal == '0') {
+                    nextVal = '00';
                 }
-            } else if (target == 'day') {
-                if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_PLUS) {
-                    fixedVal = '1'
-                } else if (!this.isValidUpdatedDatetime(target, nextVal, false) && countType == COUNT_TYPE_MINUS) {
-                    // 1日からマイナスする場合は、月末の日を算出
-                    fixedVal = this.getLastDay();
-                }
-            } else if (target == 'hour') {
-                if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_PLUS) {
-                    fixedVal = '0'
-                } else if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_MINUS) {
-                    fixedVal = '23'
-                }
-            } else if (target == 'minute') {
-                if (nextVal == '0') {
-                    fixedVal = '00';
-                }
+                return nextVal;
+            }
 
-                if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_PLUS) {
-                    fixedVal = '00'
-                } else if (!this.isValidUpdatedDatetime(target, nextVal, true) && countType == COUNT_TYPE_MINUS) {
-                    fixedVal = (BY_MINUTE * (60 / BY_MINUTE - 1)).toString();
+            // TODO: 日が30の時に2月に移動できるように
+            // 有効でない場合は、値を修正
+            var fixedVal = nextVal;
+            if (countType == COUNT_TYPE_PLUS) {
+                switch (target) {
+                    case 'month':
+                        fixedVal = '1';
+                        break;
+                    case 'day':
+                        fixedVal = '1';
+                        break;
+                    case 'hour':
+                        fixedVal = '0';
+                        break;
+                    case 'minute':
+                        fixedVal = '00';
+                        break;
+                }
+            } else if (countType == COUNT_TYPE_MINUS) {
+                switch (target) {
+                    case 'month':
+                        fixedVal = '12';
+                        break;
+                    case 'day':
+                        // 1日からマイナスする場合は、月末の日を算出
+                        fixedVal = this.getLastDay();
+                        break;
+                    case 'hour':
+                        fixedVal = '23';
+                        break;
+                    case 'minute':
+                        fixedVal = (BY_MINUTE * (60 / BY_MINUTE - 1)).toString();
+                        break;
                 }
             }
+
             return fixedVal;
         },
         doSimpleCalculation: function(currentVal, diff, countType) {
@@ -139,7 +151,7 @@ jQuery(function() {
                 return (currentVal - diff).toString();
             }
         },
-        isValidUpdatedDatetime: function(target, nextVal, includeTime) {
+        isValidUpdatedDatetime: function(target, nextVal) {
             var year = $('.time-input-year').val();
             var month = $('.time-input-month').val();
             var day = $('.time-input-day').val();
@@ -158,7 +170,7 @@ jQuery(function() {
                 minute = nextVal;
             }
 
-            if (includeTime) {
+            if (target == 'hour' || target == 'minute') {
                 return Util.isValidDateTime(year, month, day, hour, minute, 0)
             } else {
                 return Util.isValidDate(year, month, day)
@@ -170,7 +182,7 @@ jQuery(function() {
             var nextVal = 31;
             // 年月が数値でない場合は算出しない
             if (Util.isNumberOnly([$('.time-input-year').val(), $('.time-input-month').val()])) {
-                while (!this.isValidUpdatedDatetime('day', nextVal, false)) {
+                while (!this.isValidUpdatedDatetime('day', nextVal)) {
                     nextVal = this.doSimpleCalculation(nextVal, 1, COUNT_TYPE_MINUS)
                 }
             }
