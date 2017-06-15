@@ -4,6 +4,7 @@ class CreateTimesheets < ActiveRecord::Migration[5.0]
     create_table :timesheets do |t|
       t.string :year
       t.string :month
+      t.string :day
       t.datetime :start_time
       t.datetime :end_time
 

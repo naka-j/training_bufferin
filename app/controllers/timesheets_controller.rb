@@ -15,9 +15,22 @@ class TimesheetsController < ApplicationController
   def create
     @timesheet = Timesheet.new_with_params(timesheet_params)
     if @timesheet.save
-      redirect_to new_timesheet_path, notice: t('notice_message.save_success')
+      redirect_to timesheets_path, notice: t('notice_message.save_success')
     else
       render :new
+    end
+  end
+
+  def edit
+    @timesheet = Timesheet.get_edit_target(params)
+  end
+
+  def update
+    @timesheet = Timesheet.get_edit_target_with_params(params[:id], params[:dd], timesheet_params)
+    if @timesheet.save
+      redirect_to timesheets_path(params[:id]), notice: t('notice_message.save_success')
+    else
+      render :edit
     end
   end
 

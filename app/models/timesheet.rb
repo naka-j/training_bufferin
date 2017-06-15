@@ -42,7 +42,7 @@ class Timesheet < ApplicationRecord
 
     # 既に登録されている時間か？
     registered = Timesheet.by_start_date(start_time)
-    if registered.present?
+    if registered.present? && id != registered.first.id
       errors.add(:start_time, I18n.t('error_message.already_registered'))
     end
   end
@@ -86,10 +86,19 @@ class Timesheet < ApplicationRecord
 
   end
 
-  # 初期表示時に現在時刻をデフォルトでセット（分は切り上げ）
+  # 初期表示時に現在時刻をデフォルトでセット
   def set_default_value
-    current_time = Time.now
-    target_time = current_time + (MINUTE_INPUT_BY - (current_time.min % MINUTE_INPUT_BY)).minute
+    self.start_time = Time.now
+    set_time_value
+  end
+
+  # 時間関係の値をセット
+  def set_time_value
+    target_time = start_time
+    # 分は設定された単位で切り上げ
+    if target_time.min % MINUTE_INPUT_BY > 0
+      target_time = start_time + (MINUTE_INPUT_BY - (start_time.min % MINUTE_INPUT_BY)).minute
+    end
     self.start_time_year = target_time.year
     self.start_time_month = target_time.month
     self.start_time_day = target_time.day
@@ -101,6 +110,7 @@ class Timesheet < ApplicationRecord
   def set_time_params
     self.year = start_time_year_str
     self.month = start_time_month_str
+    self.day = start_time_day_str
     self.start_time = convert_string_to_time(start_time_str)
     # self.end_time = convert_string_to_time(end_time_str)
   end
@@ -120,6 +130,25 @@ class Timesheet < ApplicationRecord
     def new_with_params(params)
       timesheet = self.new(params)
       timesheet.set_time_params
+      timesheet
+    end
+
+    # 時間の値をセットした１データを取得
+    def get_edit_target(params)
+      timesheet = self.get_monthly_timesheet(params[:id]).find_by_day(params[:dd])
+      if timesheet.present?
+        timesheet.set_time_value
+      end
+      timesheet
+    end
+
+    # 更新するデータに入力値をセットして取得
+    def get_edit_target_with_params(yyyymm, dd, params)
+      timesheet = self.get_monthly_timesheet(yyyymm).find_by_day(dd)
+      if timesheet.present?
+        timesheet.assign_attributes(params)
+        timesheet.set_time_params
+      end
       timesheet
     end
 
