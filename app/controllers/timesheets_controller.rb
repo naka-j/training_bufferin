@@ -34,6 +34,12 @@ class TimesheetsController < ApplicationController
     end
   end
 
+  def destroy
+    timesheet = Timesheet.get_monthly_timesheet(params[:id]).find_by_day(params[:dd])
+    timesheet.destroy if timesheet.present?
+    redirect_to timesheets_path, notice: t('notice_message.delete_success')
+  end
+
   private
   def timesheet_params
     params.require(:timesheet).permit(
