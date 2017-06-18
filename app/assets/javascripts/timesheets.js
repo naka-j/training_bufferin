@@ -54,11 +54,15 @@ jQuery(function() {
         bindEvents: function() {
             $('.up-btn').on('click', this.changeTargetBoxNum.bind(this));
             $('.down-btn').on('click', this.changeTargetBoxNum.bind(this));
+            $('#timesheet-submit').on('click', this.sendNotification.bind(this));
         },
         rowSlideIn: function() {
             $('.timesheet-detail').each(function(i) {
                 $(this).delay(25 * i).animate({left: 0}, 80);
             })
+        },
+        sendNotification: function() {
+            App.timesheet.test("test");
         },
         // 押されたボタンによって入力値を変更
         changeTargetBoxNum: function(e) {
@@ -106,7 +110,6 @@ jQuery(function() {
                 return nextVal;
             }
 
-            // TODO: 日が30の時に2月に移動できるように
             // 有効でない場合は、値を修正
             var fixedVal = nextVal;
             if (countType == COUNT_TYPE_PLUS) {

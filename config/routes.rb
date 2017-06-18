@@ -6,4 +6,6 @@ Rails.application.routes.draw do
     get '/:dd/edit', action: :edit, on: :member, id: /[0-9]{6}/, dd: /[0-9]{2}/
     patch '/:dd', action: :update, on: :member, id: /[0-9]{6}/, dd: /[0-9]{2}/
   end
+
+  mount ActionCable.server => '/cable'
 end
