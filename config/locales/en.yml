@@ -22,13 +22,25 @@
 en:
   common:
     btn_submit: 'Send'
+    btn_save: 'Save'
+    btn_edit: 'Edit'
+    btn_delete: 'Delete'
+    btn_list: 'List'
+    btn_new: 'New'
+    lbl_minute: 'Min'
   activerecord:
     attributes:
       timesheet:
+        start_time_day: ''
         start_time: 'Start time'
         start_time_min: 'Start time(min)'
+        end_time: 'End time'
+        end_time_min: 'End time(min)'
+  setting:
+    inputted_by_minute: ''
   notice_message:
     save_success: 'Save completely.'
+    delete_success: 'Delete completely.'
   error_message:
     is_required: 'is required.'
     is_invalid: 'is not correct.'

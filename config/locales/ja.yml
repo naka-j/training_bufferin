@@ -13,6 +13,8 @@ ja:
         start_time_day: '日付'
         start_time: '出勤時間'
         start_time_min: '出勤時間（分）'
+        end_time: '退勤時間'
+        end_time_min: '退勤時間（分）'
   setting:
     inputted_by_minute: '入力単位'
   notice_message:

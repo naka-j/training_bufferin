@@ -2,11 +2,8 @@
 class Timesheet < ApplicationRecord
   include Utilities
 
-  attr_accessor :start_time_year,
-                :start_time_month,
-                :start_time_day,
-                :start_time_hour,
-                :start_time_min
+  attr_accessor :start_time_year, :start_time_month, :start_time_day, :start_time_hour, :start_time_min,
+                :end_time_year, :end_time_month, :end_time_day, :end_time_hour, :end_time_min
 
   MINUTE_INPUT_BY = 15
 
@@ -67,43 +64,84 @@ class Timesheet < ApplicationRecord
   def start_time_min_str
     sprintf("%02d", start_time_min) if is_number_only?(start_time_min)
   end
+  def end_time_year_str
+    sprintf("%04d", end_time_year) if is_number_only?(end_time_year)
+  end
+  def end_time_month_str
+    sprintf("%02d", end_time_month) if is_number_only?(end_time_month)
+  end
+  def end_time_day_str
+    sprintf("%02d", end_time_day) if is_number_only?(end_time_day)
+  end
+  def end_time_hour_str
+    sprintf("%02d", end_time_hour) if is_number_only?(end_time_hour)
+  end
+  def end_time_min_str
+    sprintf("%02d", end_time_min) if is_number_only?(end_time_min)
+  end
 
   # 入力値をyyyy/mm/dd hh:miの形式で返す
   def start_time_str_with_slash
     "#{start_time_year_str}/#{start_time_month_str}/#{start_time_day_str} #{start_time_hour_str}:#{start_time_min_str}"
   end
+  def end_time_str_with_slash
+    "#{end_time_year_str}/#{end_time_month_str}/#{end_time_day_str} #{end_time_hour_str}:#{end_time_min_str}"
+  end
   # 入力値をhh:miの形式で返す
   def start_time_time_str
+    if start_time.present?
     self.start_time_hour = start_time.hour.to_s
     self.start_time_min = start_time.min.to_s
     "#{start_time_hour_str}:#{start_time_min_str}"
+    end
+  end
+
+  def end_time_time_str
+    if end_time.present?
+      self.end_time_hour = end_time.hour.to_s
+      self.end_time_min = end_time.min.to_s
+      "#{end_time_hour_str}:#{end_time_min_str}"
+    end
   end
   # 入力値をyyyymmddhhmissの形式で返す
   def start_time_str
     "#{start_time_year_str}#{start_time_month_str}#{start_time_day_str}#{start_time_hour_str}#{start_time_min_str}00"
   end
   def end_time_str
-
+    "#{end_time_year_str}#{end_time_month_str}#{end_time_day_str}#{end_time_hour_str}#{end_time_min_str}00"
   end
 
   # 初期表示時に現在時刻をデフォルトでセット
   def set_default_value
     self.start_time = Time.now
+    self.end_time = Time.now
     set_time_value
   end
 
   # 時間関係の値をセット
   def set_time_value
-    target_time = start_time
+    # 出勤時間
+    start_target_time = start_time
     # 分は設定された単位で切り上げ
-    if target_time.min % MINUTE_INPUT_BY > 0
-      target_time = start_time + (MINUTE_INPUT_BY - (start_time.min % MINUTE_INPUT_BY)).minute
+    if start_target_time.min % MINUTE_INPUT_BY > 0
+      start_target_time = start_target_time + (MINUTE_INPUT_BY - (start_target_time.min % MINUTE_INPUT_BY)).minute
     end
-    self.start_time_year = target_time.year
-    self.start_time_month = target_time.month
-    self.start_time_day = target_time.day
-    self.start_time_hour = target_time.hour
-    self.start_time_min = sprintf("%02d", target_time.min)
+    self.start_time_year = start_target_time.year
+    self.start_time_month = start_target_time.month
+    self.start_time_day = start_target_time.day
+    self.start_time_hour = start_target_time.hour
+    self.start_time_min = sprintf("%02d", start_target_time.min)
+
+    # 退勤時間
+    # end_target_time = end_time
+    # if end_target_time.min % MINUTE_INPUT_BY > 0
+    #   end_target_time = end_target_time - (end_target_time.min % MINUTE_INPUT_BY).minute
+    # end
+    # self.end_time_year = end_target_time.year
+    # self.end_time_month = end_target_time.month
+    # self.end_time_day = end_target_time.day
+    # self.end_time_hour = end_target_time.hour
+    # self.end_time_min = sprintf("%02d", end_target_time.min)
   end
 
   # インスタンスの値から時間に関するカラムに値をセット
@@ -112,7 +150,7 @@ class Timesheet < ApplicationRecord
     self.month = start_time_month_str
     self.day = start_time_day_str
     self.start_time = convert_string_to_time(start_time_str)
-    # self.end_time = convert_string_to_time(end_time_str)
+    self.end_time = convert_string_to_time(end_time_str)
   end
 
   #---------------------------------
