@@ -21,7 +21,7 @@
 
 en:
   common:
-    btn_submit: 'Send'
+    btn_submit: 'Save'
     btn_save: 'Save'
     btn_edit: 'Edit'
     btn_delete: 'Delete'

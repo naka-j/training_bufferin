@@ -5,6 +5,7 @@
       <%= link_to '>', "#{timesheets_path}/#{@timesheets_header[:next_month_str]}", class: 'btn btn-lg btn-default' %>
     </div>
     <div class="col-xs-4 text-center current-month">
+      <%= hidden_field_tag 'target-year-month', params[:yyyymm] %>
       <%= @timesheets_header[:target_month] %>
     </div>
     <div class="col-xs-4 text-right">
@@ -18,19 +19,6 @@
     <div class="col-xs-2"></div>
     <div class="col-xs-4"></div>
   </div>
-  <div id="timesheet-list">
-    <% @timesheets.each do |t| %>
-        <div class="row timesheet-detail">
-          <div class="col-xs-2 text-center"><%= t.start_time.day %></div>
-          <div class="col-xs-2 text-center"><%= t.start_time_time_str %></div>
-          <div class="col-xs-2 text-center"><%= t.end_time_time_str %></div>
-          <div class="col-xs-2"></div>
-          <div class="col-xs-4 text-right">
-            <%= link_to t('common.btn_edit'), "#{timesheets_path}/#{params[:yyyymm]}/#{t.day}/edit", class: 'btn btn-default' %>
-            <%= link_to t('common.btn_delete'), "#{timesheets_path}/#{params[:yyyymm]}/#{t.day}", method: :delete, class: 'btn btn-default' %>
-          </div>
-        </div>
-    <% end %>
-  </div>
+  <div id="timesheet-list"></div>
 
 </div>
