@@ -1,4 +1,6 @@
 jQuery(function() {
+    'use strict';
+
    var clockUtil = {
        // 針の角度を算出
        hourNeedleDeg: function(currentDate) {

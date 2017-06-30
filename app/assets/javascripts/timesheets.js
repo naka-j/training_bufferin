@@ -1,96 +1,49 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
-jQuery(function() {
-    var COUNT_TYPE_PLUS = 'P';
-    var COUNT_TYPE_MINUS = 'M';
-    var BY_MINUTE = 15;
+$(function() {
+    'use strict';
 
-    var Util = {
-        // 数字のみか？
-        isNumberOnly: function(numArray) {
-            var result = true;
-            $.each(numArray, function(i, num) {
-                if (isNaN(parseInt(num))){
-                    result = false;
-                    return false;
-                }
-            });
-
-            return result;
-        },
-        // 日付として有効か？
-        isValidDate: function(year, month, day) {
-            var y = parseInt(year);
-            var m = parseInt(month);
-            var d = parseInt(day);
-            if (isNaN(y) || isNaN(m) || isNaN(d)) {
-                return false;
-            }
-            var time = new Date(y, m - 1, d);
-            return (time.getFullYear() == y && time.getMonth() == m - 1 && time.getDate() == d);
-        },
-        // 日時として有効か？
-        isValidDateTime: function(year, month, day, hour, minute, second) {
-            var y = parseInt(year);
-            var m = parseInt(month);
-            var d = parseInt(day);
-            var h = parseInt(hour);
-            var mi = parseInt(minute);
-            var s = parseInt(second);
-            if (isNaN(y) || isNaN(m) || isNaN(d) || isNaN(h) || isNaN(mi) || isNaN(s)) {
-                return false;
-            }
-            var time = new Date(y, m - 1, d, h, mi, second);
-            return (time.getFullYear() == y && time.getMonth() == m - 1 && time.getDate() == d &&
-                    time.getHours() == h && time.getMinutes() == mi && time.getSeconds() == s);
+    if (!$('#timesheets-index').length) {
+        return
+    }
+    var TimesheetModel = {
+        getAll: function (params, successFunc, errorFunc) {
+            $.ajax({
+                type: 'GET',
+                url: API_BASE_URL + '/timesheets/' + params.yyyymm,
+                dataType: 'json'
+            })
+                .done(function (data, statusCode, jqXHR) {
+                    successFunc(data, statusCode, jqXHR);
+                })
+                .fail(function (jqXHR, statusCode, error) {
+                    errorFunc(jqXHR, statusCode, error)
+                })
         }
     };
 
-    var TimesheetModel = {
-        init: function() {
-
-        },
-        getAll: function(params, successFunc, errorFunc) {
-            $.ajax({
-                type: 'GET',
-                url: '/api/v1/timesheets/' + params.yyyymm,
-                dataType: 'json'
-            })
-            .done(function(data, statusCode, jqXHR) {
-                successFunc(data, statusCode, jqXHR);
-            })
-            .fail(function(jqXHR, statusCode, error) {
-                errorFunc(jqXHR, statusCode, error)
-            })
-        }
-    }
-
     var TimesheetCtrl = {
-        getTimesheets: function(params, successFunc, errorFunc) {
+        getTimesheets: function (params, successFunc, errorFunc) {
             return TimesheetModel.getAll(params, successFunc, errorFunc);
         },
-        init: function() {
-            TimesheetModel.init();
+        init: function () {
             TimesheetView.init();
         }
-    }
+    };
 
     var TimesheetView = {
-        init: function() {
+        init: function () {
             this.timesheetList = $('#timesheet-list');
+            this.targetYearMonth = $('#target-year-month');
             this.bindEvents();
-            if ($('#timesheets-index').length) {
-                this.loadList();
-            }
+            this.loadList();
         },
-        bindEvents: function() {
-            $('.up-btn').on('click', this.changeTargetBoxNum.bind(this));
-            $('.down-btn').on('click', this.changeTargetBoxNum.bind(this));
-            $('#timesheet-submit').on('click', this.sendNotification.bind(this));
+        bindEvents: function () {
+
         },
-        afterListLoaded: function(data, statusCode, jqXHR) {
+        afterListLoaded: function (data, statusCode, jqXHR) {
             var htmlStr = '';
-            data.timesheets.forEach(function(t){
+            data.timesheets.forEach(function (t) {
                 var start_time = new Date(t.start_time)
                 var start_time_str = start_time.getHours().toString() + ':' + start_time.getMinutes().toString();
                 var end_time = new Date(t.end_time)
@@ -102,160 +55,30 @@ jQuery(function() {
                     '<div class="col-xs-2 text-center">' + end_time_str + '</div>' +
                     '<div class="col-xs-2"></div>' +
                     '<div class="col-xs-4 text-right">' +
-                    '<a href="/timesheets/' + TimesheetView.targetYearMonth + '/' + t.day +'/edit" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-pencil"></span></a>' +
-                    '<a href="/timesheets/' + t.id +'" data-method="delete" class="btn btn-sm btn-danger" style="margin-left: 10px;"><span class="glyphicon glyphicon-trash"></span></a>' +
+                    '<a href="/timesheets/' + TimesheetView.targetYearMonth + '/' + t.day + '/edit" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-pencil"></span></a>' +
+                    '<a href="/timesheets/' + t.id + '" data-method="delete" class="btn btn-sm btn-danger" style="margin-left: 10px;"><span class="glyphicon glyphicon-trash"></span></a>' +
                     '</div>' +
                     '</div>';
             });
             TimesheetView.timesheetList.html(htmlStr);
             TimesheetView.rowSlideIn();
         },
-        errorListLoaded: function(jqXHR, statusCode, error) {
+        errorListLoaded: function (jqXHR, statusCode, error) {
             alert('Load Error!');
         },
-        loadList: function() {
-            this.targetYearMonth = $('#target-year-month').val();
+        loadList: function () {
             var params = {
-                yyyymm: this.targetYearMonth
-            }
+                yyyymm: this.targetYearMonth.val()
+            };
             TimesheetCtrl.getTimesheets(params, this.afterListLoaded, this.errorListLoaded);
         },
-        rowSlideIn: function() {
-            $('.timesheet-detail').each(function(i) {
+        rowSlideIn: function () {
+            $('.timesheet-detail').each(function (i) {
                 $(this).delay(25 * i).animate({left: 0}, 80);
             })
-        },
-        sendNotification: function() {
-            App.timesheet.test("test");
-        },
-        // 押されたボタンによって入力値を変更
-        changeTargetBoxNum: function(e) {
-            var target = $(e.currentTarget).attr('target-type');
-            var countType;
-            if (e.currentTarget.className == 'up-btn') {
-                countType = COUNT_TYPE_PLUS;
-            } else if (e.currentTarget.className == 'down-btn') {
-                countType = COUNT_TYPE_MINUS
-            } else {
-                return false;
-            }
-
-            this.updateTimeBoxVal(target, countType);
-        },
-        updateTimeBoxVal: function(target, countType) {
-            var targetTextBox = $('.time-input-' + target);
-            // 入力値が数字かどうか
-            var currentVal = parseInt(targetTextBox.val());
-            if (isNaN(currentVal)) {
-                return false;
-            }
-
-            var nextVal = this.calculateTime(target, currentVal, countType);
-            targetTextBox.val(nextVal);
-        },
-        calculateTime: function(target, currentVal, countType) {
-            var nextVal;
-            // 入力値の次の値を算出
-            if (target == 'minute') {
-                nextVal = this.doSimpleCalculation(currentVal, BY_MINUTE, countType);
-            } else {
-                nextVal = this.doSimpleCalculation(currentVal, 1, countType);
-            }
-            nextVal = this.fixCalculatedTime(target, nextVal, countType);
-
-            return nextVal;
-        },
-        fixCalculatedTime: function(target, nextVal, countType) {
-            // 計算後の値が日付として有効な場合は、修正せずにreturn（分の桁数のみ修正）
-            if (this.isValidUpdatedDatetime(target, nextVal)) {
-                if (target == 'minute' && nextVal == '0') {
-                    nextVal = '00';
-                }
-                return nextVal;
-            }
-
-            // 有効でない場合は、値を修正
-            var fixedVal = nextVal;
-            if (countType == COUNT_TYPE_PLUS) {
-                switch (target) {
-                    case 'month':
-                        fixedVal = '1';
-                        break;
-                    case 'day':
-                        fixedVal = '1';
-                        break;
-                    case 'hour':
-                        fixedVal = '0';
-                        break;
-                    case 'minute':
-                        fixedVal = '00';
-                        break;
-                }
-            } else if (countType == COUNT_TYPE_MINUS) {
-                switch (target) {
-                    case 'month':
-                        fixedVal = '12';
-                        break;
-                    case 'day':
-                        // 1日からマイナスする場合は、月末の日を算出
-                        fixedVal = this.getLastDay();
-                        break;
-                    case 'hour':
-                        fixedVal = '23';
-                        break;
-                    case 'minute':
-                        fixedVal = (BY_MINUTE * (60 / BY_MINUTE - 1)).toString();
-                        break;
-                }
-            }
-
-            return fixedVal;
-        },
-        doSimpleCalculation: function(currentVal, diff, countType) {
-            if (countType == COUNT_TYPE_PLUS) {
-                return (currentVal + diff).toString();
-            } else if (countType == COUNT_TYPE_MINUS) {
-                return (currentVal - diff).toString();
-            }
-        },
-        isValidUpdatedDatetime: function(target, nextVal) {
-            var year = $('.time-input-year').val();
-            var month = $('.time-input-month').val();
-            var day = $('.time-input-day').val();
-            var hour = $('.time-input-hour').val();
-            var minute = $('.time-input-minute').val();
-            // 変更対象の値に変更後の値をセット
-            if (target == 'year') {
-                year = nextVal;
-            } else if (target == 'month') {
-                month = nextVal;
-            } else if (target == 'day') {
-                day = nextVal;
-            } else if (target == 'hour') {
-                hour = nextVal;
-            } else if (target == 'minute') {
-                minute = nextVal;
-            }
-
-            if (target == 'hour' || target == 'minute') {
-                return Util.isValidDateTime(year, month, day, hour, minute, 0)
-            } else {
-                return Util.isValidDate(year, month, day)
-            }
-
-        },
-        // 入力されている月の末日を取得
-        getLastDay: function() {
-            var nextVal = 31;
-            // 年月が数値でない場合は算出しない
-            if (Util.isNumberOnly([$('.time-input-year').val(), $('.time-input-month').val()])) {
-                while (!this.isValidUpdatedDatetime('day', nextVal)) {
-                    nextVal = this.doSimpleCalculation(nextVal, 1, COUNT_TYPE_MINUS)
-                }
-            }
-            return nextVal.toString();
         }
-    }
+    };
 
     TimesheetCtrl.init();
+
 });
