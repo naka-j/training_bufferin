@@ -5,23 +5,58 @@ $(function() {
         return
     }
 
+    var FormModel = {
+        addNewTimesheet: function(params, successFunc, errorFunc) {
+            var requestURL = API_BASE_URL + '/timesheets';
+            Util.commonAjaxTypeJson(requestURL, 'POST', params, successFunc, errorFunc);
+        },
+        getTimesheetItem: function(params, successFunc, errorFunc) {
+            var requestURL = API_BASE_URL + '/timesheets/' + params.id + '/edit';
+            Util.commonAjaxTypeJson(requestURL, 'GET', params, successFunc, errorFunc);
+        },
+        UpdateTimesheet: function(params, successFunc, errorFunc) {
+            var requestURL = API_BASE_URL + '/timesheets/' + params.id;
+            Util.commonAjaxTypeJson(requestURL, 'PATCH', params, successFunc, errorFunc);
+        }
+    };
+
     var FormCtrl = {
         init: function() {
             FormView.init();
+        },
+        create: function(params, successFunc, errorFunc) {
+            FormModel.addNewTimesheet(params, successFunc, errorFunc);
         }
     };
 
     var FormView = {
         init: function() {
             this.bindEvents();
+            this.newTimesheetForm = $('#new_timesheet');
+            this.startTimeYear = $('#timesheet_start_time_year');
+            this.startTimeMonth = $('#timesheet_start_time_month');
+            this.startTimeDay = $('#timesheet_start_time_day');
+            this.startTimeHour = $('#timesheet_start_time_hour');
+            this.startTimeMin = $('#timesheet_start_time_min');
         },
         bindEvents: function() {
             $('.up-btn').on('click', this.changeTargetBoxNum.bind(this));
             $('.down-btn').on('click', this.changeTargetBoxNum.bind(this));
-            $('#timesheet-submit').on('click', this.sendNotification.bind(this));
+            $('#timesheet-submit').on('click', this.createTimesheet.bind(this));
         },
-        sendNotification: function () {
-            App.timesheet.test("test");
+        createTimesheet: function() {
+            var params = Util.serializeJson(this.newTimesheetForm);
+            FormCtrl.create(params, FormView.afterCreated, FormView.errorCreated);
+        },
+        afterCreated: function(data, statusCode, jqXHR) {
+            FormView.sendNotification(data);
+            location.replace('/timesheets/' + data.year + data.month);
+        },
+        errorCreated: function(jqXHR, statusCode, error) {
+            alert('OH MY GOD!!')
+        },
+        sendNotification: function (data) {
+            App.timesheet.create(data);
         },
         // 押されたボタンによって入力値を変更
         changeTargetBoxNum: function (e) {

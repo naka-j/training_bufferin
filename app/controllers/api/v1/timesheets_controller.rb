@@ -16,10 +16,11 @@ class API::V1::TimesheetsController < ApplicationController
   def create
     @timesheet = Timesheet.new_with_params(timesheet_params)
     if @timesheet.save
-      redirect_to timesheets_path, notice: t('notice_message.save_success')
+      status = 201
     else
-      render :new
+      status = 400
     end
+    render json: @timesheet, status: status
   end
 
   def edit

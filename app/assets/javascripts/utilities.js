@@ -36,5 +36,26 @@ var Util = {
         var time = new Date(y, m - 1, d, h, mi, second);
         return (time.getFullYear() == y && time.getMonth() == m - 1 && time.getDate() == d &&
         time.getHours() == h && time.getMinutes() == mi && time.getSeconds() == s);
+    },
+    serializeJson: function(form) {
+        var resultJson = {};
+        form.serializeArray().forEach(function (f, i) {
+            resultJson[f['name']] = f['value'];
+        });
+        return resultJson;
+    },
+    commonAjaxTypeJson: function(url, method, params, successFunc, errorFunc) {
+        $.ajax({
+            url: url,
+            type: method,
+            data: params,
+            dataType: 'json'
+        })
+            .done(function(data, status, jqXHR) {
+                successFunc(data, status, jqXHR);
+            })
+            .fail(function(jqXHR, status, error) {
+                errorFunc(jqXHR, status, error);
+            })
     }
 };

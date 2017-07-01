@@ -10,10 +10,10 @@ App.timesheet = App.cable.subscriptions.create("TimesheetChannel", {
 
   received: function(data) {
       console.log('Received!!')
-    return console.log(data["message"]);
+      console.log(data);
   },
 
-  test: function(message) {
-    return this.perform('test', {message: message})
+  create: function(data) {
+    return this.perform('create', data)
   }
 });

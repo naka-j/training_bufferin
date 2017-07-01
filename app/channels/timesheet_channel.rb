@@ -7,7 +7,7 @@ class TimesheetChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def test(data)
-    ActionCable.server.broadcast('timesheet_channel', message: data)
+  def create(data)
+    ActionCable.server.broadcast('timesheet_channel', data: data)
   end
 end

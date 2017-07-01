@@ -21,4 +21,22 @@
   </div>
   <div id="timesheet-list"></div>
 
+  <script id="timesheet-row-template" type="text/x-handlebars-template">
+    {{#this}}
+    <div class="row timesheet-detail">
+      <div class="col-xs-2 text-center">{{day}}</div>
+      <div class="col-xs-2 text-center">{{start_time_str}}</div>
+      <div class="col-xs-2 text-center">{{end_time_str}}</div>
+      <div class="col-xs-2"></div>
+      <div class="col-xs-4 text-right">
+        <%= link_to "#{timesheets_path}/#{params[:yyyymm]}/{{day}}/edit", class: "btn btn-sm btn-default" do %>
+            <span class="glyphicon glyphicon-pencil"></span>
+        <% end %>
+        <%= link_to "#{timesheets_path}/{{id}}", method: :delete, class: "btn btn-sm btn-danger", style: "margin-left: 10px;" do %>
+            <span class="glyphicon glyphicon-trash"></span>
+        <% end %>
+      </div>
+    </div>
+    {{/this}}
+  </script>
 </div>

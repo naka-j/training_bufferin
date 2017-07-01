@@ -8,17 +8,8 @@ $(function() {
     }
     var TimesheetModel = {
         getAll: function (params, successFunc, errorFunc) {
-            $.ajax({
-                type: 'GET',
-                url: API_BASE_URL + '/timesheets/' + params.yyyymm,
-                dataType: 'json'
-            })
-                .done(function (data, statusCode, jqXHR) {
-                    successFunc(data, statusCode, jqXHR);
-                })
-                .fail(function (jqXHR, statusCode, error) {
-                    errorFunc(jqXHR, statusCode, error)
-                })
+            var requestURL = API_BASE_URL + '/timesheets/' + params.yyyymm;
+            Util.commonAjaxTypeJson(requestURL, 'GET', params, successFunc, errorFunc);
         }
     };
 
@@ -35,6 +26,7 @@ $(function() {
         init: function () {
             this.timesheetList = $('#timesheet-list');
             this.targetYearMonth = $('#target-year-month');
+            this.timesheetListItem = Handlebars.compile($('#timesheet-row-template').html());
             this.bindEvents();
             this.loadList();
         },
@@ -44,21 +36,12 @@ $(function() {
         afterListLoaded: function (data, statusCode, jqXHR) {
             var htmlStr = '';
             data.timesheets.forEach(function (t) {
-                var start_time = new Date(t.start_time)
-                var start_time_str = start_time.getHours().toString() + ':' + start_time.getMinutes().toString();
-                var end_time = new Date(t.end_time)
-                var end_time_str = end_time.getHours().toString() + ':' + end_time.getMinutes().toString();
+                t.start_time = new Date(t.start_time)
+                t.start_time_str = t.start_time.getHours() + ':' + (t.start_time.getMinutes() < 10 ? '0' : '') + t.start_time.getMinutes();
+                t.end_time = t.end_time == null ? null : new Date(t.end_time);
+                t.end_time_str = t.end_time == null ? '' : t.end_time.getHours() + ':' + (t.end_time.getMinutes() < 10 ? '0' : '') + t.end_time.getMinutes();
 
-                htmlStr += '<div class="row timesheet-detail">' +
-                    '<div class="col-xs-2 text-center">' + t.day + '</div>' +
-                    '<div class="col-xs-2 text-center">' + start_time_str + '</div>' +
-                    '<div class="col-xs-2 text-center">' + end_time_str + '</div>' +
-                    '<div class="col-xs-2"></div>' +
-                    '<div class="col-xs-4 text-right">' +
-                    '<a href="/timesheets/' + TimesheetView.targetYearMonth + '/' + t.day + '/edit" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-pencil"></span></a>' +
-                    '<a href="/timesheets/' + t.id + '" data-method="delete" class="btn btn-sm btn-danger" style="margin-left: 10px;"><span class="glyphicon glyphicon-trash"></span></a>' +
-                    '</div>' +
-                    '</div>';
+                htmlStr += TimesheetView.timesheetListItem(t);
             });
             TimesheetView.timesheetList.html(htmlStr);
             TimesheetView.rowSlideIn();
