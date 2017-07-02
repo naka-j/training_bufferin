@@ -6,6 +6,8 @@ class Timesheet < ApplicationRecord
                 :end_time_year, :end_time_month, :end_time_day, :end_time_hour, :end_time_min
 
   MINUTE_INPUT_BY = 15
+  EDIT_TARGET_START = 'S'
+  EDIT_TARGET_END = 'E'
 
   # 指定日付のデータを取得
   scope :by_start_date, ->(start_time) {
@@ -24,7 +26,8 @@ class Timesheet < ApplicationRecord
   # バリデーション
   #---------------------------------
   validate :check_start_time
-
+  validate :check_end_time
+  
   # Check: 出勤時間
   def check_start_time
     # 有効な値かどうか？
@@ -41,6 +44,19 @@ class Timesheet < ApplicationRecord
     registered = Timesheet.by_start_date(start_time)
     if registered.present? && id != registered.first.id
       errors.add(:start_time, I18n.t('error_message.already_registered'))
+    end
+  end
+
+  # Check: 退勤時間
+  def check_end_time
+    # 有効な値かどうか？
+    if !end_time.present?
+      return
+    end
+
+    # 分が設定された単位の入力かどうか？
+    if end_time_min.to_i % MINUTE_INPUT_BY != 0
+      errors.add(:end_time_min, I18n.t('error_message.must_be_by_15min'))
     end
   end
 
@@ -87,6 +103,7 @@ class Timesheet < ApplicationRecord
   def end_time_str_with_slash
     "#{end_time_year_str}/#{end_time_month_str}/#{end_time_day_str} #{end_time_hour_str}:#{end_time_min_str}"
   end
+
   # 入力値をhh:miの形式で返す
   def start_time_time_str
     if start_time.present?
@@ -95,7 +112,6 @@ class Timesheet < ApplicationRecord
     "#{start_time_hour_str}:#{start_time_min_str}"
     end
   end
-
   def end_time_time_str
     if end_time.present?
       self.end_time_hour = end_time.hour.to_s
@@ -103,18 +119,25 @@ class Timesheet < ApplicationRecord
       "#{end_time_hour_str}:#{end_time_min_str}"
     end
   end
+
   # 入力値をyyyymmddhhmissの形式で返す
   def start_time_str
+    if !start_time_year_str.present? || !start_time_month_str.present? || !start_time_day_str.present? || !start_time_hour_str.present? || !start_time_min_str.present?
+      return ''
+    end
     "#{start_time_year_str}#{start_time_month_str}#{start_time_day_str}#{start_time_hour_str}#{start_time_min_str}00"
   end
   def end_time_str
+    if !end_time_year_str.present? || !end_time_month_str.present? || !end_time_day_str.present? || !end_time_hour_str.present? || !end_time_min_str.present?
+      return ''
+    end
     "#{end_time_year_str}#{end_time_month_str}#{end_time_day_str}#{end_time_hour_str}#{end_time_min_str}00"
   end
 
-  # 初期表示時に現在時刻をデフォルトでセット
+  # 初期表示時、時間登録がない場合現在時刻をデフォルトでセット
   def set_default_value
-    self.start_time = Time.now
-    self.end_time = Time.now
+    self.start_time = Time.now if !self.start_time.present?
+    self.end_time = Time.now if !self.end_time.present?
     set_time_value
   end
 
@@ -122,7 +145,7 @@ class Timesheet < ApplicationRecord
   def set_time_value
     # 出勤時間
     start_target_time = start_time
-    # 分は設定された単位で切り上げ
+    # 出勤の分は設定された単位で切り上げ
     if start_target_time.min % MINUTE_INPUT_BY > 0
       start_target_time = start_target_time + (MINUTE_INPUT_BY - (start_target_time.min % MINUTE_INPUT_BY)).minute
     end
@@ -133,24 +156,30 @@ class Timesheet < ApplicationRecord
     self.start_time_min = sprintf("%02d", start_target_time.min)
 
     # 退勤時間
-    # end_target_time = end_time
-    # if end_target_time.min % MINUTE_INPUT_BY > 0
-    #   end_target_time = end_target_time - (end_target_time.min % MINUTE_INPUT_BY).minute
-    # end
-    # self.end_time_year = end_target_time.year
-    # self.end_time_month = end_target_time.month
-    # self.end_time_day = end_target_time.day
-    # self.end_time_hour = end_target_time.hour
-    # self.end_time_min = sprintf("%02d", end_target_time.min)
+    end_target_time = end_time
+    # 退勤の分は設定された単位で切り捨て
+    if end_target_time.min % MINUTE_INPUT_BY > 0
+      end_target_time = end_target_time - (end_target_time.min % MINUTE_INPUT_BY).minute
+    end
+    self.end_time_year = end_target_time.year
+    self.end_time_month = end_target_time.month
+    self.end_time_day = end_target_time.day
+    self.end_time_hour = end_target_time.hour
+    self.end_time_min = sprintf("%02d", end_target_time.min)
   end
 
   # インスタンスの値から時間に関するカラムに値をセット
   def set_time_params
-    self.year = start_time_year_str
-    self.month = start_time_month_str
-    self.day = start_time_day_str
-    self.start_time = convert_string_to_time(start_time_str)
-    self.end_time = convert_string_to_time(end_time_str)
+    if start_time_str.present?
+      # 年月日は出勤時間のものとする
+      self.year = start_time_year_str
+      self.month = start_time_month_str
+      self.day = start_time_day_str
+      self.start_time = convert_string_to_time(start_time_str)
+    end
+    if end_time_str.present?
+      self.end_time = convert_string_to_time(end_time_str)
+    end
   end
 
   #---------------------------------
@@ -175,6 +204,7 @@ class Timesheet < ApplicationRecord
     def get_edit_target(params)
       timesheet = self.get_monthly_timesheet(params[:id]).find_by_day(params[:dd])
       if timesheet.present?
+        timesheet.set_default_value
         timesheet.set_time_value
       end
       timesheet
@@ -183,6 +213,16 @@ class Timesheet < ApplicationRecord
     # 更新するデータに入力値をセットして取得
     def get_edit_target_with_params(yyyymm, dd, params)
       timesheet = self.get_monthly_timesheet(yyyymm).find_by_day(dd)
+      if timesheet.present?
+        timesheet.assign_attributes(params)
+        timesheet.set_time_params
+      end
+      timesheet
+    end
+
+    # 更新するデータに入力値をセットして取得（API用）
+    def get_edit_target_with_params_for_api(id, params)
+      timesheet = self.find_by_id(id)
       if timesheet.present?
         timesheet.assign_attributes(params)
         timesheet.set_time_params

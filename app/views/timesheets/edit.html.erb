@@ -2,7 +2,8 @@
   <%= render 'shared/errors', errors: @timesheet.errors %>
   <div class="form-area">
     <%= form_for @timesheet, url: "#{timesheets_path}/#{params[:id]}/#{@timesheet.day}" do |f| %>
-      <%= render 'form', f: f %>
+        <%= render 'start_form', f: f if params[:mode] != Timesheet::EDIT_TARGET_END %>
+        <%= render 'end_form', f: f if params[:mode] == Timesheet::EDIT_TARGET_END %>
     <% end %>
   </div>
 </div>

@@ -16,4 +16,5 @@
 //= require handlebars
 //= require constants
 //= require utilities
+//= require form
 //= require_tree .

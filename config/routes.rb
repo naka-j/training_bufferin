@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   namespace :api, format: :json do
     namespace :v1 do
-      resources :timesheets, except: [:show, :edit, :update] do
+      resources :timesheets, except: [:show] do
         get '/:yyyymm', action: :index, on: :collection, yyyymm: /[0-9]{6}/
       end
     end

@@ -1,5 +1,6 @@
+<%= f.hidden_field :id %>
 <div class="text-center">
-  <%= f.label :start_time, t('activerecord.attributes.timesheet.start_time') %>
+  <%= f.label :end_time, t('activerecord.attributes.timesheet.end_time') %>
 </div>
 <div class="row">
   <div class="col-xs-2 text-right">
@@ -7,31 +8,31 @@
   <div class="col-xs-10">
     <div class="input-block">
       <div class="up-btn" target-type="year"><span class="glyphicon glyphicon-chevron-up"></span></div>
-      <%= f.text_field :start_time_year, maxlength: 4, class: 'time-input-year' %>
+      <%= f.text_field :end_time_year, maxlength: 4, class: 'time-input-year' %>
       <div class="down-btn" target-type="year"><span class="glyphicon glyphicon-chevron-down"></span></div>
     </div>
     <div class="input-block"><span class="datetime-sign">/</span></div>
     <div class="input-block">
       <div class="up-btn" target-type="month"><span class="glyphicon glyphicon-chevron-up"></span></div>
-      <%= f.text_field :start_time_month, maxlength: 2, class: 'time-input-month' %>
+      <%= f.text_field :end_time_month, maxlength: 2, class: 'time-input-month' %>
       <div class="down-btn" target-type="month"><span class="glyphicon glyphicon-chevron-down"></span></div>
     </div>
     <div class="input-block"><span class="datetime-sign">/</span></div>
     <div class="input-block">
       <div class="up-btn" target-type="day"><span class="glyphicon glyphicon-chevron-up"></span></div>
-      <%= f.text_field :start_time_day, maxlength: 2, class: 'time-input-day' %>
+      <%= f.text_field :end_time_day, maxlength: 2, class: 'time-input-day' %>
       <div class="down-btn" target-type="day"><span class="glyphicon glyphicon-chevron-down"></span></div>
     </div>
     <div class="input-block">　</div>
     <div class="input-block">
       <div class="up-btn" target-type="hour"><span class="glyphicon glyphicon-chevron-up"></span></div>
-      <%= f.text_field :start_time_hour, maxlength: 2, class: 'time-input-hour' %>
+      <%= f.text_field :end_time_hour, maxlength: 2, class: 'time-input-hour' %>
       <div class="down-btn" target-type="hour"><span class="glyphicon glyphicon-chevron-down"></span></div>
     </div>
     <div class="input-block"><span class="datetime-sign">:</span></div>
     <div class="input-block">
       <div class="up-btn" target-type="minute"><span class="glyphicon glyphicon-chevron-up"></span></div>
-      <%= f.text_field :start_time_min, maxlength: 2, class: 'time-input-minute' %>
+      <%= f.text_field :end_time_min, maxlength: 2, class: 'time-input-minute' %>
       <div class="down-btn" target-type="minute"><span class="glyphicon glyphicon-chevron-down"></span></div>
     </div>
   </div>

@@ -9,13 +9,20 @@ $(function() {
     var TimesheetModel = {
         getAll: function (params, successFunc, errorFunc) {
             var requestURL = API_BASE_URL + '/timesheets/' + params.yyyymm;
-            Util.commonAjaxTypeJson(requestURL, 'GET', params, successFunc, errorFunc);
+            Util.commonAjaxTypeJson(requestURL, 'GET', {}, successFunc, errorFunc);
+        },
+        deleteItem: function(params, successFunc, errorFunc) {
+            var requestURL = API_BASE_URL + '/timesheets/' + params.id;
+            Util.commonAjaxTypeJson(requestURL, 'DELETE', {}, successFunc, errorFunc);
         }
     };
 
     var TimesheetCtrl = {
         getTimesheets: function (params, successFunc, errorFunc) {
             return TimesheetModel.getAll(params, successFunc, errorFunc);
+        },
+        deleteItem: function (params, successFunc, errorFunc) {
+            return TimesheetModel.deleteItem(params, successFunc, errorFunc)
         },
         init: function () {
             TimesheetView.init();
@@ -27,11 +34,10 @@ $(function() {
             this.timesheetList = $('#timesheet-list');
             this.targetYearMonth = $('#target-year-month');
             this.timesheetListItem = Handlebars.compile($('#timesheet-row-template').html());
-            this.bindEvents();
             this.loadList();
         },
         bindEvents: function () {
-
+            $('.timesheet-delete').on('click', this.deleteTimesheetItem.bind(this));
         },
         afterListLoaded: function (data, statusCode, jqXHR) {
             var htmlStr = '';
@@ -44,6 +50,8 @@ $(function() {
                 htmlStr += TimesheetView.timesheetListItem(t);
             });
             TimesheetView.timesheetList.html(htmlStr);
+            // ロード後にイベントバインド
+            TimesheetView.bindEvents();
             TimesheetView.rowSlideIn();
         },
         errorListLoaded: function (jqXHR, statusCode, error) {
@@ -59,6 +67,21 @@ $(function() {
             $('.timesheet-detail').each(function (i) {
                 $(this).delay(25 * i).animate({left: 0}, 80);
             })
+        },
+        deleteTimesheetItem: function(e) {
+            this.deleteTargetRow = $(e.currentTarget).closest('.timesheet-detail');
+            var params = {
+                id: $(e.currentTarget).attr('data-item-id')
+            };
+            TimesheetCtrl.deleteItem(params, TimesheetView.itemDeleted, TimesheetView.errorItemDelete);
+        },
+        itemDeleted: function(data, status, jqXHR) {
+            TimesheetView.deleteTargetRow.animate({height: 0}, 200, function() {
+                this.remove();
+            })
+        },
+        errorItemDelete: function(jqXHR, status, error) {
+            alert('deleted error');
         }
     };
 

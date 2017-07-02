@@ -13,7 +13,7 @@ App.timesheet = App.cable.subscriptions.create("TimesheetChannel", {
       console.log(data);
   },
 
-  create: function(data) {
-    return this.perform('create', data)
+    saved: function(data) {
+    return this.perform('saved', data)
   }
 });
