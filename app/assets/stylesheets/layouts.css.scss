@@ -65,17 +65,13 @@ body {
   display: inline;
 }
 
-.errors {
+.notice {
+  color: green;
+}
+
+#toast-container > div {
   ul {
     padding: 0;
     list-style: none;
   }
-
-  li {
-    color: red;
-  }
-}
-
-.notice {
-  color: green;
 }

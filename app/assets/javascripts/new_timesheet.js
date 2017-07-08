@@ -24,6 +24,7 @@ $(function() {
     var NewTimesheetView = {
         init: function() {
             this.newTimesheetForm = $('#new_timesheet');
+            this.errorTemplate = Handlebars.compile($('#error-template').html());
             this.bindEvents();
         },
         bindEvents: function() {
@@ -40,7 +41,8 @@ $(function() {
             location.replace('/timesheets/' + data.year + data.month);
         },
         errorSaved: function(jqXHR, statusCode, error) {
-            alert('OH MY GOD!!')
+            var errorMessages = NewTimesheetView.errorTemplate({errors: jqXHR.responseJSON});
+            toastr.error(errorMessages);
         },
         sendNotification: function (data) {
             App.timesheet.saved(data);

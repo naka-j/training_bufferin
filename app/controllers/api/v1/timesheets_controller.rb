@@ -16,11 +16,11 @@ class API::V1::TimesheetsController < ApplicationController
   def create
     @timesheet = Timesheet.new_with_params(timesheet_params)
     if @timesheet.save
-      status = 201
+      render json: @timesheet, status: 201
     else
-      status = 400
+      render json: @timesheet.errors.full_messages, status: 400
     end
-    render json: @timesheet, status: status
+
   end
 
   def edit
@@ -30,21 +30,20 @@ class API::V1::TimesheetsController < ApplicationController
   def update
     @timesheet = Timesheet.get_edit_target_with_params_for_api(params[:id], timesheet_params)
     if @timesheet.save
-      status = 201
+      render json: @timesheet, status: 201
     else
-      status = 400
+      render json: @timesheet.errors.full_messages, status: 400
     end
-    render json: @timesheet, status: status
+
   end
 
   def destroy
     @timesheet = Timesheet.find_by_id(params[:id])
     if @timesheet.destroy
-      status = 201
+      render json: @timesheet, status: 201
     else
-      status = 400
+      render json: @timesheet.errors.full_messages, status: 400
     end
-    render json: @timesheet, status: status
   end
 
   private

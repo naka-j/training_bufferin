@@ -1,9 +1,9 @@
-<% if errors.present? %>
-    <div class="errors">
-      <ul>
-        <% errors.full_messages.each do |e| %>
-            <li><%= e %></li>
-        <% end %>
-      </ul>
-    </div>
-<% end %>
+<script id="error-template" type="text/x-handlebars-template">
+  {{#this}}
+  <ul>
+    {{#each errors}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ul>
+  {{/this}}
+</script>

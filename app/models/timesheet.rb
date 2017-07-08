@@ -27,7 +27,7 @@ class Timesheet < ApplicationRecord
   #---------------------------------
   validate :check_start_time
   validate :check_end_time
-  
+
   # Check: 出勤時間
   def check_start_time
     # 有効な値かどうか？
@@ -136,8 +136,14 @@ class Timesheet < ApplicationRecord
 
   # 初期表示時、時間登録がない場合現在時刻をデフォルトでセット
   def set_default_value
-    self.start_time = Time.now if !self.start_time.present?
-    self.end_time = Time.now if !self.end_time.present?
+    current_time = Time.now
+    self.start_time = current_time if !self.start_time.present?
+    # 退勤時間の初期値は時間は現在時刻、日付は登録対象日付
+    if !self.end_time.present? && self.id.present?
+      self.end_time = Time.new(self.year, self.month, self.day, current_time.hour, current_time.min, 0)
+    elsif !self.end_time.present?
+      self.end_time = Time.now
+    end
     set_time_value
   end
 

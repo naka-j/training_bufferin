@@ -1,8 +1,9 @@
 <div id="timesheets-new">
-  <%= render 'shared/errors', errors: @timesheet.errors %>
   <div class="form-area">
     <%= form_for @timesheet do |f| %>
       <%= render 'start_form', f: f %>
     <% end %>
   </div>
+
+  <%= render 'shared/errors' %>
 </div>

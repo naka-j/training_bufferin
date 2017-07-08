@@ -14,7 +14,12 @@
 //= require jquery_ujs
 //= require bootstrap-sprockets
 //= require handlebars
+//= require toastr.min
 //= require constants
 //= require utilities
 //= require form
 //= require_tree .
+
+toastr.options = {
+    "positionClass": "toast-top-full-width"
+};
