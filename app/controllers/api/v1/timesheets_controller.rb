@@ -34,7 +34,6 @@ class API::V1::TimesheetsController < ApplicationController
     else
       render json: @timesheet.errors.full_messages, status: 400
     end
-
   end
 
   def destroy

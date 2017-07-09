@@ -37,6 +37,8 @@ var Util = {
         return (time.getFullYear() == y && time.getMonth() == m - 1 && time.getDate() == d &&
         time.getHours() == h && time.getMinutes() == mi && time.getSeconds() == s);
     },
+
+    // formの入力値をJsonに変換
     serializeJson: function(form) {
         var resultJson = {};
         form.serializeArray().forEach(function (f, i) {
@@ -44,6 +46,7 @@ var Util = {
         });
         return resultJson;
     },
+
     commonAjaxTypeJson: function(url, method, params, successFunc, errorFunc) {
         $.ajax({
             url: url,

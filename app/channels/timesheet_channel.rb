@@ -10,4 +10,8 @@ class TimesheetChannel < ApplicationCable::Channel
   def saved(data)
     ActionCable.server.broadcast('timesheet_channel', data: data)
   end
+
+  def deleted(data)
+    ActionCable.server.broadcast('timesheet_channel', data: data)
+  end
 end
